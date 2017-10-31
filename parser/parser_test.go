@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/aymerick/douceur/css"
+	"github.com/jeffizhungry/douceur/css"
 )
 
 func MustParse(t *testing.T, txt string, nbRules int) *css.Stylesheet {
@@ -626,6 +626,42 @@ func TestParseDeclarations(t *testing.T) {
 	for i, decl := range declarations {
 		if !decl.Equal(expectedOutput[i]) {
 			t.Fatal("Failed to parse Declarations: ", decl.String(), expectedOutput[i].String())
+		}
+	}
+}
+
+func TestParseInvalidCSS(t *testing.T) {
+	testcases := map[string]struct {
+		input         string
+		expected      string
+		expectedError string
+	}{
+		"should ignore extraneous semicolons": {
+			input:    "div { background-color: yellow };;;;;",
+			expected: "div {\n  background-color: yellow;\n}",
+		},
+		"should ignore selectors with no declarations": {
+			input:    "p; div > p; div { background-color: yellow };",
+			expected: "div {\n  background-color: yellow;\n}",
+		},
+	}
+
+	for msg, tc := range testcases {
+		ss, err := Parse(tc.input)
+		if tc.expectedError == "" {
+			if err != nil {
+				t.Fatalf("%v: Parse error: %v", msg, err.Error())
+			}
+			if tc.expected != ss.String() {
+				t.Fatalf("%v: Expected output: %v, Got: %v", msg, tc.expected, ss.String())
+			}
+		} else {
+			if err == nil {
+				t.Fatalf("%v: Expected parse error: %v", msg, tc.expectedError)
+			}
+			if tc.expectedError != err.Error() {
+				t.Fatalf("%v: Expected error: %v, Got: %v", msg, tc.expectedError, err.Error())
+			}
 		}
 	}
 }

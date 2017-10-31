@@ -8,7 +8,7 @@ import (
 
 	"github.com/gorilla/css/scanner"
 
-	"github.com/aymerick/douceur/css"
+	"github.com/jeffizhungry/douceur/css"
 )
 
 const (
@@ -112,6 +112,9 @@ func (parser *Parser) ParseRules() ([]*css.Rule, error) {
 			rule, err := parser.ParseRule()
 			if err != nil {
 				return result, err
+			}
+			if rule == nil {
+				continue
 			}
 
 			rule.EmbedLevel = parser.embedLevel
@@ -277,6 +280,12 @@ func (parser *Parser) parseQualifiedRule() (*css.Rule, error) {
 			prelude, err := parser.parsePrelude()
 			if err != nil {
 				return result, err
+			}
+
+			// if there is no prelude, ignore and move on
+			if prelude == "" {
+				parser.shiftToken()
+				return nil, nil
 			}
 
 			result.Prelude = prelude
