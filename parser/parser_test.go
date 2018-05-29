@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"polymail-api/lib/utils"
 	"strings"
 	"testing"
 
@@ -601,31 +602,72 @@ func TestAtRuleSupports(t *testing.T) {
 }
 
 func TestParseDeclarations(t *testing.T) {
-	input := `color: blue; text-decoration:underline;`
-
-	declarations, err := ParseDeclarations(input)
-	if err != nil {
-		t.Fatal("Failed to parse Declarations:", input)
-	}
-
-	expectedOutput := []*css.Declaration{
-		{
-			Property: "color",
-			Value:    "blue",
+	testcases := map[string]struct {
+		input    string
+		expected []*css.Declaration
+	}{
+		"basic:": {
+			input: `color: blue; text-decoration:underline;`,
+			expected: []*css.Declaration{
+				{
+					Property: "color",
+					Value:    "blue",
+				},
+				{
+					Property: "text-decoration",
+					Value:    "underline",
+				},
+			},
 		},
-		{
-			Property: "text-decoration",
-			Value:    "underline",
+		"better handling inline styles: see HACK parser.go:line58": {
+			input: `font-family:-apple-system,-webkit-system-font,SFNSText,Segoe UI,system,HelveticaNeue,Helvetica,Arial,sans-serif;font-weight:400;color:#333333;font-size:17px;line-height:26px;-webkit-font-smoothing:antialiased`,
+			expected: []*css.Declaration{
+				{
+					Property:  "font-family",
+					Value:     "-apple-system,-webkit-system-font,SFNSText,Segoe UI,system,HelveticaNeue,Helvetica,Arial,sans-serif",
+					Important: false,
+				},
+				{
+					Property:  "font-weight",
+					Value:     "400",
+					Important: false,
+				},
+				{
+					Property:  "color",
+					Value:     "#333333",
+					Important: false,
+				},
+				{
+					Property:  "font-size",
+					Value:     "17px",
+					Important: false,
+				},
+				{
+					Property:  "line-height",
+					Value:     "26px",
+					Important: false,
+				},
+				{
+					Property:  "-webkit-font-smoothing",
+					Value:     "antialiased",
+					Important: false,
+				},
+			},
 		},
 	}
-
-	if len(declarations) != len(expectedOutput) {
-		t.Fatal("Failed to parse Declarations:", input)
-	}
-
-	for i, decl := range declarations {
-		if !decl.Equal(expectedOutput[i]) {
-			t.Fatal("Failed to parse Declarations: ", decl.String(), expectedOutput[i].String())
+	for _, tc := range testcases {
+		declarations, err := ParseDeclarations(tc.input)
+		if err != nil {
+			t.Fatal("Failed to parse Declarations:", tc.input)
+		}
+		if len(declarations) != len(tc.expected) {
+			utils.PPrintln(declarations)
+			t.Fatal("Failed to parse Declarations:", tc.input)
+		}
+		for i, decl := range declarations {
+			if !decl.Equal(tc.expected[i]) {
+				t.Fatal("Failed to parse Declarations: ", decl.String(), tc.expected[i].String())
+			}
 		}
 	}
 }

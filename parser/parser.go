@@ -53,11 +53,15 @@ func Parse(text string) (*css.Stylesheet, error) {
 
 // ParseDeclarations parses CSS declarations
 func ParseDeclarations(text string) ([]*css.Declaration, error) {
+	// HACK(Jeff): parser.ParseDeclarations's tokenizers handles inline styles poorly
+	// Add { } to make look like CSS attributes.
+	if !strings.HasPrefix(text, "{") && !strings.HasSuffix(text, "}") {
+		text = "{" + text + "}"
+	}
 	result, err := NewParser(text).ParseDeclarations()
 	if err != nil {
 		return nil, err
 	}
-
 	return result, nil
 }
 
