@@ -35,10 +35,11 @@ func init() {
 			"align",
 			[]string{"h1", "h2", "h3", "h4", "h5", "h6", "p", "div", "blockquote", "tr", "th", "td"},
 		},
-		"background-color": {
-			"bgcolor",
-			[]string{"body", "table", "tr", "th", "td"},
-		},
+		// NOTE(Jeff): Causes issues with emails with malformed HTML (e.g. bgcolor="#transparent")
+		// 		"background-color": {
+		// 			"bgcolor",
+		// 			[]string{"body", "table", "tr", "th", "td"},
+		// 		},
 		"background-image": {
 			"background",
 			[]string{"table"},
