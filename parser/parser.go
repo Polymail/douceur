@@ -8,7 +8,7 @@ import (
 
 	"github.com/gorilla/css/scanner"
 
-	"github.com/jeffizhungry/douceur/css"
+	"github.com/Polymail/douceur/css"
 )
 
 const (
@@ -192,6 +192,11 @@ func (parser *Parser) ParseDeclaration() (*css.Declaration, error) {
 
 			if parser.tokenChar(";") {
 				parser.shiftToken()
+
+				// handle additional semicolons
+				for parser.tokenChar(";") {
+					parser.shiftToken()
+				}
 			}
 
 			// finished

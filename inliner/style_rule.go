@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jeffizhungry/douceur/css"
+	"github.com/Polymail/douceur/css"
 )
 
 const (

@@ -5,8 +5,8 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 
-	"github.com/jeffizhungry/douceur/css"
-	"github.com/jeffizhungry/douceur/parser"
+	"github.com/Polymail/douceur/css"
+	"github.com/Polymail/douceur/parser"
 )
 
 // Element represents a HTML element with matching CSS rules

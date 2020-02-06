@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/jeffizhungry/douceur/css"
+	"github.com/Polymail/douceur/css"
 )
 
 func MustParse(t *testing.T, txt string, nbRules int) *css.Stylesheet {
@@ -34,6 +34,10 @@ func MustEqualCSS(t *testing.T, ruleString string, expected string) {
 	if ruleString != expected {
 		t.Fatal(fmt.Sprintf("CSS generation error\n   Expected:\n\"%s\"\n   Got:\n\"%s\"", expected, ruleString))
 	}
+}
+
+func TestExtraSemicolons(t *testing.T) {
+	MustParse(t, ".test { color: red;; background: yellow }", 1)
 }
 
 func TestQualifiedRule(t *testing.T) {

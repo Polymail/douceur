@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/Polymail/douceur/css"
+	"github.com/Polymail/douceur/parser"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/jeffizhungry/douceur/css"
-	"github.com/jeffizhungry/douceur/parser"
 	"golang.org/x/net/html"
 )
 
